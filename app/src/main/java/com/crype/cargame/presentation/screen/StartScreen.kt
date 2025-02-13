@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.crype.cargame.R
 import com.crype.cargame.presentation.components.StartButton
-import com.crype.cargame.ui.theme.BoxBackColor
+import com.crype.cargame.presentation.ui.theme.BoxBackColor
 
 @Composable
 fun StartScreen() {
@@ -82,10 +82,4 @@ fun StartScreen() {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun StartScreenPreview() {
-    StartScreen()
 }
