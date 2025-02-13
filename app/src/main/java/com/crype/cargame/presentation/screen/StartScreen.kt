@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,7 +67,7 @@ fun StartScreen() {
                         .background(color = BoxBackColor)
                 ) {
                     Text(
-                        text = "Best Score",
+                        text = stringResource(id = R.string.best_score),
                         color = Color.White,
                         fontSize = 30.sp,
                         fontFamily = FontFamily.Serif,
@@ -77,7 +78,6 @@ fun StartScreen() {
             }
             Box(modifier = Modifier.weight(1f)) {
                 StartButton {
-
                 }
             }
         }
