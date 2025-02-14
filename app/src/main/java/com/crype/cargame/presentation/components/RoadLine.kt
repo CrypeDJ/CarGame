@@ -9,10 +9,13 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlin.math.ceil
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 
 @Composable
 fun RoadLine(
@@ -24,7 +27,7 @@ fun RoadLine(
     val totalHeight = stripeHeight + stripeSpacing
 
     val infiniteTransition = rememberInfiniteTransition(label = "")
-    val offsetY = infiniteTransition.animateFloat(
+    val offsetY by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = totalHeight,
         animationSpec = infiniteRepeatable(tween(time, easing = LinearEasing)),
@@ -40,8 +43,8 @@ fun RoadLine(
         val centerX = size.width / 2
         val stripeXStart = centerX - stripeWidth / 2
 
-        val topRectHeight = stripeHeight * (offsetY.value / stripeHeight) - stripeSpacing
-        if (offsetY.value > stripeSpacing) {
+        val topRectHeight = stripeHeight * (offsetY / stripeHeight) - stripeSpacing
+        if (offsetY > stripeSpacing) {
             drawRect(
                 color = Color.White,
                 topLeft = androidx.compose.ui.geometry.Offset(stripeXStart, 0f),
@@ -49,12 +52,12 @@ fun RoadLine(
             )
         }
         for (i in 0 until stripeCount) {
-            val y = (i * totalHeight + offsetY.value) % size.height
+            val y = (i * totalHeight + offsetY) % size.height
 
             drawRect(
                 color = Color.White,
-                topLeft = androidx.compose.ui.geometry.Offset(stripeXStart, y),
-                size = androidx.compose.ui.geometry.Size(stripeWidth, stripeHeight)
+                topLeft = Offset(stripeXStart, y),
+                size = Size(stripeWidth, stripeHeight)
             )
         }
     }
