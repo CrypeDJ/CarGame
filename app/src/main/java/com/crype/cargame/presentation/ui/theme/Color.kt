@@ -1,4 +1,4 @@
-package com.crype.cargame.ui.theme
+package com.crype.cargame.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

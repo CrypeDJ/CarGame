@@ -1,4 +1,4 @@
-package com.crype.cargame.ui.theme
+package com.crype.cargame.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
