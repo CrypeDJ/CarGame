@@ -1,4 +1,4 @@
-package com.crype.cargame.presentation.components
+package com.crype.cargame.presentation.components.main_car
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement

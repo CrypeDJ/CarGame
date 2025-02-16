@@ -1,4 +1,4 @@
-package com.crype.cargame.presentation.components
+package com.crype.cargame.presentation.components.main_car
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
