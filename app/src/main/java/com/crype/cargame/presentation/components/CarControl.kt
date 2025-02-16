@@ -3,7 +3,7 @@ package com.crype.cargame.presentation.components
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -21,8 +21,8 @@ fun CarControl(
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 40.dp),
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.Bottom
     ) {
         ControlButton(
@@ -35,4 +35,3 @@ fun CarControl(
         )
     }
 }
-

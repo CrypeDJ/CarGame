@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.crype.cargame.presentation.navigation.NavGraph
 import com.crype.cargame.presentation.navigation.Screens
+import com.crype.cargame.presentation.screen.GameScreen
 import com.crype.cargame.presentation.ui.theme.CarGameTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,11 +16,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CarGameTheme {
-                val navController = rememberNavController()
-                NavGraph(
-                    navController = navController,
-                    startDestination = Screens.StartScreen.route
-                )
+//                val navController = rememberNavController()
+//                NavGraph(
+//                    navController = navController,
+//                    startDestination = Screens.StartScreen.route
+//                )
+                GameScreen()
             }
         }
     }
