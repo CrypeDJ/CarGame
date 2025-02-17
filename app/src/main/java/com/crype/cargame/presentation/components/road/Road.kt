@@ -1,4 +1,4 @@
-package com.crype.cargame.presentation.components
+package com.crype.cargame.presentation.components.road
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.crype.cargame.presentation.components
+package com.crype.cargame.presentation.components.road
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
@@ -11,11 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlin.math.ceil
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 
 @Composable
 fun RoadLine(
@@ -47,8 +47,8 @@ fun RoadLine(
         if (offsetY > stripeSpacing) {
             drawRect(
                 color = Color.White,
-                topLeft = androidx.compose.ui.geometry.Offset(stripeXStart, 0f),
-                size = androidx.compose.ui.geometry.Size(stripeWidth, topRectHeight)
+                topLeft = Offset(stripeXStart, 0f),
+                size = Size(stripeWidth, topRectHeight)
             )
         }
         for (i in 0 until stripeCount) {
