@@ -38,7 +38,7 @@ fun GameScreen(
             .padding(horizontal = 55.dp)
             .fillMaxWidth()
     ) {
-        for (i in 1..3) {
+        (1..3).forEach { _ ->
             PoliceCar(
                 durationMillis = policeCarViewModel.delayOrDuration(
                     minValue = 7000,
