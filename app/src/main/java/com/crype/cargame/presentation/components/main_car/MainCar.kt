@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,9 +19,12 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.crype.cargame.R
-import com.crype.cargame.presentation.viewmodel.MainCarViewModel
+import com.crype.cargame.domain.models.CarsModel
+import com.crype.cargame.presentation.viewmodel.GameViewModel
+import kotlin.math.roundToInt
 
 @Composable
 fun MainCar(
@@ -28,31 +32,33 @@ fun MainCar(
     isLeftPressed: Boolean,
     speed: Int,
     paddingValues: PaddingValues,
-    viewModel: MainCarViewModel = viewModel()
+    carState: (CarsModel) -> Unit,
+    modifier: Modifier,
+    viewModel: GameViewModel = viewModel()
 ) {
-    var columnWidth by remember {
-        mutableStateOf(0)
-    }
-    var carWidth by remember {
-        mutableStateOf(0)
-    }
-    if (isRightPressed || isLeftPressed) {
+    var columnWidth by remember { mutableStateOf(0) }
+    val mainCar = remember { mutableStateOf(CarsModel()) }
+
+    LaunchedEffect(isRightPressed, isLeftPressed) {
         viewModel.startMoving(
             isRightPress = isRightPressed,
             isLeftPress = isLeftPressed,
             minX = 0,
-            maxX = columnWidth - carWidth,
+            maxX = columnWidth - mainCar.value.carSize.width.roundToInt(),
             speed = speed
         )
     }
+
+    LaunchedEffect(mainCar.value) {
+        carState(mainCar.value)
+    }
+
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(paddingValues)
             .fillMaxWidth()
             .height(100.dp)
-            .onSizeChanged { size ->
-                columnWidth = size.width
-            }
+            .onSizeChanged { size -> columnWidth = size.width }
     ) {
         Image(
             painter = painterResource(id = R.drawable.car),
@@ -60,9 +66,7 @@ fun MainCar(
             contentScale = ContentScale.FillHeight,
             modifier = Modifier
                 .offset { IntOffset(viewModel.position.value, 0) }
-                .onSizeChanged { size ->
-                    carWidth = size.width
-                }
+                .onSizeChanged { size -> mainCar.value.carSize = size.toSize() }
                 .height(100.dp),
         )
     }
