@@ -11,18 +11,21 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun CarControl(
     rightInteractionSource: MutableInteractionSource,
-    leftInteractionSource: MutableInteractionSource
+    leftInteractionSource: MutableInteractionSource,
+
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 20.dp)
+            .padding(bottom = 20.dp),
         verticalAlignment = Alignment.Bottom
     ) {
         ControlButton(

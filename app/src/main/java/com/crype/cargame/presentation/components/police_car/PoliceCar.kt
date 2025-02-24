@@ -14,51 +14,63 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.crype.cargame.R
+import com.crype.cargame.domain.models.CarsModel
+import com.crype.cargame.presentation.viewmodel.GameViewModel
 import kotlin.math.roundToInt
 
 @Composable
 fun PoliceCar(
     durationMillis: Int,
     delay: Int,
+    carState: (CarsModel) -> Unit,
+    id: Int,
+    viewModel: GameViewModel = viewModel()
 ) {
-    var roadHeight by remember {
-        mutableStateOf(0)
-    }
-    var carHeight by remember {
-        mutableStateOf(0)
-    }
+    var roadHeight by remember { mutableStateOf(0) }
+    val policeCar by remember { mutableStateOf(CarsModel(id = id)) }
+
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val offsetY by infiniteTransition.animateFloat(
-        initialValue = -carHeight.toFloat(),
-        targetValue = (roadHeight + carHeight * 2).toFloat(),
+        initialValue = -policeCar.carSize.height,
+        targetValue = (roadHeight + policeCar.carSize.height * 2),
         animationSpec = infiniteRepeatable(
             animation = tween(
                 durationMillis = durationMillis,
                 delayMillis = delay,
                 easing = LinearEasing
             ),
-            repeatMode = RepeatMode.Restart,
-            initialStartOffset = StartOffset(roadHeight / 2, StartOffsetType.Delay)
+            repeatMode = RepeatMode.Restart
         ),
         label = ""
     )
+
+    // Обновляем состояние машины в ViewModel
+    LaunchedEffect(policeCar.id, offsetY) {
+        policeCar.offsetY = offsetY
+        carState(policeCar)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxHeight()
             .onSizeChanged { size ->
                 roadHeight = size.height
-            },
+            }
     ) {
         Image(
             painter = painterResource(id = R.drawable.car_police),
@@ -70,7 +82,7 @@ fun PoliceCar(
                     IntOffset(0, offsetY.roundToInt())
                 }
                 .onSizeChanged { size ->
-                    carHeight = size.height
+                    policeCar.carSize = size.toSize()
                 }
         )
     }
