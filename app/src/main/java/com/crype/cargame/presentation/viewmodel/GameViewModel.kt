@@ -2,7 +2,6 @@ package com.crype.cargame.presentation.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crype.cargame.domain.models.CarsModel
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.random.Random
-import kotlin.random.nextInt
 
 class GameViewModel : ViewModel() {
     private val _position = mutableStateOf(0)
@@ -51,7 +49,6 @@ class GameViewModel : ViewModel() {
     }
 
     private val _policeCarsState = MutableStateFlow<List<CarsModel>>(emptyList())
-    val policeCarsState: StateFlow<List<CarsModel>> = _policeCarsState
 
     fun updatePoliceCar(car: CarsModel) {
         _policeCarsState.update { cars ->
@@ -67,7 +64,6 @@ class GameViewModel : ViewModel() {
     }
 
     private val _mainCarState = MutableStateFlow(CarsModel())
-    val mainCarState: StateFlow<CarsModel> = _mainCarState
 
     fun updateMainCar(car: CarsModel) {
         _mainCarState.value = car.copy(offsetX = _position.value.toFloat())

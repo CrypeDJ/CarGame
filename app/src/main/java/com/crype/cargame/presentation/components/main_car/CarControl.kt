@@ -11,14 +11,12 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun CarControl(
     rightInteractionSource: MutableInteractionSource,
     leftInteractionSource: MutableInteractionSource,
-
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,

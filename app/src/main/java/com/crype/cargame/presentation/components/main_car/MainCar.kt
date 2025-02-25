@@ -51,7 +51,7 @@ fun MainCar(
     }
 
     LaunchedEffect(mainCar.value) {
-        Log.d(viewModel.position.value.toString(),viewModel.position.value.toString())
+        Log.d(viewModel.position.value.toString(), viewModel.position.value.toString())
         mainCar.value = mainCar.value.copy(offsetX = viewModel.position.value.toFloat())
         carState(mainCar.value)
     }

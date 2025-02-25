@@ -2,8 +2,6 @@ package com.crype.cargame.presentation.components.police_car
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.StartOffset
-import androidx.compose.animation.core.StartOffsetType
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -20,17 +18,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.crype.cargame.R
 import com.crype.cargame.domain.models.CarsModel
-import com.crype.cargame.presentation.viewmodel.GameViewModel
 import kotlin.math.roundToInt
 
 @Composable
@@ -38,8 +33,7 @@ fun PoliceCar(
     durationMillis: Int,
     delay: Int,
     carState: (CarsModel) -> Unit,
-    id: Int,
-    viewModel: GameViewModel = viewModel()
+    id: Int
 ) {
     var roadHeight by remember { mutableStateOf(0) }
     val policeCar by remember { mutableStateOf(CarsModel(id = id)) }
@@ -59,7 +53,6 @@ fun PoliceCar(
         label = ""
     )
 
-    // Обновляем состояние машины в ViewModel
     LaunchedEffect(policeCar.id, offsetY) {
         policeCar.offsetY = offsetY
         carState(policeCar)
