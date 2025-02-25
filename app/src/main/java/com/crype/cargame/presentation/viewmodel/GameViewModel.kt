@@ -33,13 +33,14 @@ class GameViewModel : ViewModel() {
         minX: Int,
         speed: Int
     ) {
+        job?.cancel()
         if (!(isRightPress xor isLeftPress)) return
 
-        job?.cancel()
         job = viewModelScope.launch {
             while (isActive) {
                 _position.value = (_position.value + if (isRightPress) speed else -speed)
                     .coerceIn(minX, maxX)
+                _mainCarState.value.offsetX = _position.value.toFloat()
                 delay(16L)
             }
         }

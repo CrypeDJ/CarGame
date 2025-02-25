@@ -1,5 +1,6 @@
 package com.crype.cargame.presentation.components.main_car
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -50,6 +51,8 @@ fun MainCar(
     }
 
     LaunchedEffect(mainCar.value) {
+        Log.d(viewModel.position.value.toString(),viewModel.position.value.toString())
+        mainCar.value = mainCar.value.copy(offsetX = viewModel.position.value.toFloat())
         carState(mainCar.value)
     }
 
