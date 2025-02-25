@@ -19,12 +19,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.crype.cargame.R
 import com.crype.cargame.presentation.components.StartButton
+import com.crype.cargame.presentation.navigation.Screens
 import com.crype.cargame.presentation.ui.theme.BoxBackColor
 
 @Composable
-fun StartScreen() {
+fun StartScreen(
+    navController: NavController
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxSize(),
@@ -77,6 +81,7 @@ fun StartScreen() {
             }
             Box(modifier = Modifier.weight(1f)) {
                 StartButton {
+                    navController.navigate(route = Screens.GameScreen.route)
                 }
             }
         }
