@@ -16,12 +16,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CarGameTheme {
-//                val navController = rememberNavController()
-//                NavGraph(
-//                    navController = navController,
-//                    startDestination = Screens.StartScreen.route
-//                )
-                GameScreen()
+                val navController = rememberNavController()
+                NavGraph(
+                    navController = navController,
+                    startDestination = Screens.StartScreen.route
+                )
             }
         }
     }

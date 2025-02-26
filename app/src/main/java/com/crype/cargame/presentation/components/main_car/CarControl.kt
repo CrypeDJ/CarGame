@@ -16,13 +16,14 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CarControl(
     rightInteractionSource: MutableInteractionSource,
-    leftInteractionSource: MutableInteractionSource
+    leftInteractionSource: MutableInteractionSource,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 20.dp)
+            .padding(bottom = 20.dp),
         verticalAlignment = Alignment.Bottom
     ) {
         ControlButton(

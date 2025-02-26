@@ -18,13 +18,13 @@ fun NavGraph(
         startDestination = startDestination
     ) {
         composable(route = Screens.StartScreen.route) {
-            StartScreen()
+            StartScreen(navController)
         }
         composable(route = Screens.GameScreen.route) {
-            GameScreen()
+            GameScreen(navController)
         }
         composable(route = Screens.GameOverScreen.route) {
-            GameOverScreen()
+            GameOverScreen(navController)
         }
     }
 }

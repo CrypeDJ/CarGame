@@ -3,75 +3,106 @@ package com.crype.cargame.presentation.screen
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.crype.cargame.presentation.components.main_car.CarControl
 import com.crype.cargame.presentation.components.main_car.MainCar
 import com.crype.cargame.presentation.components.police_car.PoliceCar
 import com.crype.cargame.presentation.components.road.Road
-import com.crype.cargame.presentation.viewmodel.PoliceCarViewModel
+import com.crype.cargame.presentation.navigation.Screens
+import com.crype.cargame.presentation.viewmodel.GameViewModel
 
 @Composable
 fun GameScreen(
-    policeCarViewModel: PoliceCarViewModel = viewModel()
+    navController: NavController,
+    viewModel: GameViewModel = viewModel()
 ) {
     val rightInteractionSource = remember { MutableInteractionSource() }
     val rightPressed by rightInteractionSource.collectIsPressedAsState()
     val leftInteractionSource = remember { MutableInteractionSource() }
     val leftPressed by leftInteractionSource.collectIsPressedAsState()
+
+    var carHeight by remember { mutableStateOf(0f) }
+    var roadWidth by remember { mutableStateOf(0f) }
+
+    val collision by viewModel.collisionState.collectAsState()
+    LaunchedEffect(collision) {
+        if (collision) navController.navigate(Screens.GameOverScreen.route)
+    }
+
     Road()
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .padding(horizontal = 55.dp)
             .fillMaxWidth()
+            .onSizeChanged {
+                roadWidth = it.width.toFloat()
+            }
     ) {
-        (1..3).forEach { _ ->
+        repeat(3) { i ->
             PoliceCar(
-                durationMillis = policeCarViewModel.delayOrDuration(
-                    minValue = 7000,
-                    maxValue = 15000
-                ),
-                delay = policeCarViewModel.delayOrDuration(
-                    minValue = 0,
-                    maxValue = 5000,
-                )
+                id = i,
+                durationMillis = viewModel.delayOrDuration(7000, 15000),
+                delay = viewModel.delayOrDuration(0, 10000),
+                carState = { car ->
+                    car.offsetX = when (i) {
+                        0 -> 0f
+                        1 -> (roadWidth / 2) - (car.carSize.width / 2)
+                        2 -> roadWidth - car.carSize.width
+                        else -> 0f
+                    }
+                    viewModel.updatePoliceCar(car)
+                }
             )
         }
     }
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        modifier = Modifier
-            .fillMaxSize()
+
+    MainCar(
+        isRightPressed = rightPressed,
+        isLeftPressed = leftPressed,
+        paddingValues = PaddingValues(start = 55.dp, end = 55.dp, top = 630.dp),
+        speed = 10,
+        carState = { carState ->
+            carState.offsetY = carHeight - carState.carSize.height
+            viewModel.updateMainCar(carState)
+        },
+        modifier = Modifier.onSizeChanged { carHeight = it.height.toFloat() }
+    )
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomEnd
     ) {
-        MainCar(
-            isRightPressed = rightPressed,
-            isLeftPressed = leftPressed,
-            paddingValues = PaddingValues(horizontal = 30.dp),
-            speed = 10
-        )
         CarControl(
             leftInteractionSource = leftInteractionSource,
             rightInteractionSource = rightInteractionSource
         )
-        Spacer(modifier = Modifier.padding(20.dp))
     }
 }
 
+
 @Preview
 @Composable
-fun GamePreview() {
-    GameScreen()
+fun Preview() {
+    GameScreen(navController = rememberNavController())
 }
