@@ -11,3 +11,4 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val BoxBackColor = Color(0xFFCC3333)
+val SemiTranspanent = Color(0x6F000000)

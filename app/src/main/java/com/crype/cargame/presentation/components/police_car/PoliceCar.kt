@@ -55,6 +55,9 @@ fun PoliceCar(
 
     LaunchedEffect(policeCar.id, offsetY) {
         policeCar.offsetY = offsetY
+        if (offsetY <= -policeCar.carSize.height) {
+            policeCar.isChecked = false
+        }
         carState(policeCar)
     }
 

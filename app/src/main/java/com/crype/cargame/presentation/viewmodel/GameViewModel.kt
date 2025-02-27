@@ -18,10 +18,21 @@ class GameViewModel : ViewModel() {
     private val _position = mutableStateOf(0)
     val position: State<Int> = _position
 
+    private val _timer = MutableStateFlow("03:00")
+    val timer: StateFlow<String> = _timer
+    private var timeLeft = 180
+
+    private val _score = MutableStateFlow(0)
+    val score: StateFlow<Int> = _score
+
+    private val _isTimeOut = mutableStateOf(false)
+    val isTimeOut: State<Boolean> = _isTimeOut
+
     private var job: Job? = null
 
     init {
         startCollisionCheck()
+        startTimer()
     }
 
     fun startMoving(
@@ -55,7 +66,9 @@ class GameViewModel : ViewModel() {
             val newCars = cars.toMutableList()
             val index = newCars.indexOfFirst { it.id == car.id }
             if (index != -1) {
-                newCars[index] = car.copy(offsetY = car.offsetY)
+                newCars[index] = car.copy(
+                    offsetY = car.offsetY,
+                )
             } else {
                 newCars.add(car)
             }
@@ -79,14 +92,32 @@ class GameViewModel : ViewModel() {
                 val mainCar = _mainCarState.value
                 val policeCars = _policeCarsState.value
 
-                val hasCollision = policeCars.any { policeCar ->
-                    policeCar.rectCar.overlaps(mainCar.rectCar)
-                }
+                val hasCollision = policeCars.any { it.rectCar.overlaps(mainCar.rectCar) }
+                if (hasCollision) _collisionState.value = true
 
-                if (hasCollision && !_collisionState.value) {
-                    _collisionState.value = true
+                policeCars.forEach { policeCar ->
+                    if (policeCar.offsetY > mainCar.offsetY + mainCar.carSize.height &&
+                        !policeCar.isChecked
+                    ) {
+                        _score.value += 1
+                        policeCar.isChecked = true
+                    }
                 }
             }
         }
     }
+
+    private fun startTimer() {
+        viewModelScope.launch {
+            while (timeLeft > 0 && isActive) {
+                delay(1000L)
+                timeLeft--
+                val minutes = timeLeft / 60
+                val seconds = timeLeft % 60
+                _timer.value = String.format("%02d:%02d", minutes, seconds)
+            }
+            _isTimeOut.value = true
+        }
+    }
+
 }

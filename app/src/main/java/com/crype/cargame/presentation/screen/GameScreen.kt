@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.crype.cargame.presentation.components.Score
+import com.crype.cargame.presentation.components.Timer
 import com.crype.cargame.presentation.components.main_car.CarControl
 import com.crype.cargame.presentation.components.main_car.MainCar
 import com.crype.cargame.presentation.components.police_car.PoliceCar
@@ -45,8 +47,11 @@ fun GameScreen(
     var roadWidth by remember { mutableStateOf(0f) }
 
     val collision by viewModel.collisionState.collectAsState()
+    val isTimeOut by viewModel.isTimeOut
+
     LaunchedEffect(collision) {
         if (collision) navController.navigate(Screens.GameOverScreen.route)
+        else if (isTimeOut) navController.navigate(Screens.StartScreen.route)
     }
 
     Road()
@@ -97,6 +102,15 @@ fun GameScreen(
             leftInteractionSource = leftInteractionSource,
             rightInteractionSource = rightInteractionSource
         )
+    }
+    Row (
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .padding(horizontal = 50.dp, vertical = 30.dp)
+            .fillMaxWidth()
+    ){
+        Timer()
+        Score()
     }
 }
 
