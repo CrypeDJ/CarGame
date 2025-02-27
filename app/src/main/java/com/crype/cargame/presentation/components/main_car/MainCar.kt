@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.crype.cargame.R
 import com.crype.cargame.domain.models.CarsModel
 import com.crype.cargame.presentation.viewmodel.GameViewModel
+import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
 
 @Composable
@@ -35,7 +36,7 @@ fun MainCar(
     paddingValues: PaddingValues,
     carState: (CarsModel) -> Unit,
     modifier: Modifier,
-    viewModel: GameViewModel = viewModel()
+    viewModel: GameViewModel = koinViewModel()
 ) {
     var columnWidth by remember { mutableStateOf(0) }
     val mainCar = remember { mutableStateOf(CarsModel()) }
@@ -50,8 +51,7 @@ fun MainCar(
         )
     }
 
-    LaunchedEffect(mainCar.value) {
-        Log.d(viewModel.position.value.toString(), viewModel.position.value.toString())
+    LaunchedEffect(viewModel.position.value) {
         mainCar.value = mainCar.value.copy(offsetX = viewModel.position.value.toFloat())
         carState(mainCar.value)
     }

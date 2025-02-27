@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,11 +27,16 @@ import com.crype.cargame.R
 import com.crype.cargame.presentation.components.StartButton
 import com.crype.cargame.presentation.navigation.Screens
 import com.crype.cargame.presentation.ui.theme.BoxBackColor
+import com.crype.cargame.presentation.viewmodel.GameViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun StartScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: GameViewModel = koinViewModel()
 ) {
+    val score by viewModel.highScore.collectAsState()
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxSize(),
@@ -57,10 +64,9 @@ fun StartScreen(
                         .background(color = BoxBackColor)
                 ) {
                     Text(
-                        text = "33",
+                        text = score.toString(),
                         color = Color.White,
                         fontSize = 50.sp,
-                        //fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.ExtraBold,
                         modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp),
                         letterSpacing = 3.sp

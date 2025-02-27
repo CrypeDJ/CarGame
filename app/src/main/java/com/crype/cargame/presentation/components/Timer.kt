@@ -12,10 +12,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.crype.cargame.presentation.viewmodel.GameViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Timer(
-    viewModel: GameViewModel = viewModel()
+    viewModel: GameViewModel = koinViewModel()
 ) {
     val timer by viewModel.timer.collectAsState()
     Text(

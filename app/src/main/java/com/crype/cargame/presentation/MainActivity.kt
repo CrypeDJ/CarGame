@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.crype.cargame.presentation.navigation.NavGraph
 import com.crype.cargame.presentation.navigation.Screens
-import com.crype.cargame.presentation.screen.GameScreen
 import com.crype.cargame.presentation.ui.theme.CarGameTheme
 
 class MainActivity : ComponentActivity() {

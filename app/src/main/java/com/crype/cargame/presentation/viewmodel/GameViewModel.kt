@@ -5,16 +5,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crype.cargame.domain.models.CarsModel
+import com.crype.cargame.domain.repository.ScoreRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class GameViewModel : ViewModel() {
+class GameViewModel(
+    private val scoreRepository: ScoreRepository
+) : ViewModel() {
     private val _position = mutableStateOf(0)
     val position: State<Int> = _position
 
@@ -25,6 +29,9 @@ class GameViewModel : ViewModel() {
     private val _score = MutableStateFlow(0)
     val score: StateFlow<Int> = _score
 
+    private val _highScore = MutableStateFlow(0)
+    val highScore: StateFlow<Int> = _highScore
+
     private val _isTimeOut = mutableStateOf(false)
     val isTimeOut: State<Boolean> = _isTimeOut
 
@@ -33,7 +40,10 @@ class GameViewModel : ViewModel() {
     init {
         startCollisionCheck()
         startTimer()
+        loadHighScore()
     }
+
+    private val moveJob = MutableStateFlow<Job?>(null)
 
     fun startMoving(
         isRightPress: Boolean,
@@ -42,10 +52,10 @@ class GameViewModel : ViewModel() {
         minX: Int,
         speed: Int
     ) {
-        job?.cancel()
+        moveJob.value?.cancel()
         if (!(isRightPress xor isLeftPress)) return
 
-        job = viewModelScope.launch {
+        moveJob.value = viewModelScope.launch {
             while (isActive) {
                 _position.value = (_position.value + if (isRightPress) speed else -speed)
                     .coerceIn(minX, maxX)
@@ -120,4 +130,17 @@ class GameViewModel : ViewModel() {
         }
     }
 
+    private fun loadHighScore() {
+        viewModelScope.launch {
+            scoreRepository.getScore()
+                .collect { _highScore.value = it }
+        }
+    }
+
+    fun saveHighScore() {
+        viewModelScope.launch {
+            if (_score.value > _highScore.value)
+                scoreRepository.saveScore(_score.value)
+        }
+    }
 }

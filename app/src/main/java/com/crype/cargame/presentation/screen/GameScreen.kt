@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.crype.cargame.presentation.components.Score
@@ -32,11 +31,12 @@ import com.crype.cargame.presentation.components.police_car.PoliceCar
 import com.crype.cargame.presentation.components.road.Road
 import com.crype.cargame.presentation.navigation.Screens
 import com.crype.cargame.presentation.viewmodel.GameViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun GameScreen(
     navController: NavController,
-    viewModel: GameViewModel = viewModel()
+    viewModel: GameViewModel = koinViewModel()
 ) {
     val rightInteractionSource = remember { MutableInteractionSource() }
     val rightPressed by rightInteractionSource.collectIsPressedAsState()
@@ -49,9 +49,12 @@ fun GameScreen(
     val collision by viewModel.collisionState.collectAsState()
     val isTimeOut by viewModel.isTimeOut
 
-    LaunchedEffect(collision) {
-        if (collision) navController.navigate(Screens.GameOverScreen.route)
-        else if (isTimeOut) navController.navigate(Screens.StartScreen.route)
+    LaunchedEffect(collision, isTimeOut) {
+        if (collision || isTimeOut) {
+            viewModel.saveHighScore()
+            val route = if (collision) Screens.GameOverScreen.route else Screens.StartScreen.route
+            navController.navigate(route)
+        }
     }
 
     Road()
@@ -103,12 +106,12 @@ fun GameScreen(
             rightInteractionSource = rightInteractionSource
         )
     }
-    Row (
+    Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .padding(horizontal = 50.dp, vertical = 30.dp)
             .fillMaxWidth()
-    ){
+    ) {
         Timer()
         Score()
     }
