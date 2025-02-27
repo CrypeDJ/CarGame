@@ -65,8 +65,27 @@ class GameViewModel(
         }
     }
 
-    fun delayOrDuration(minValue: Int, maxValue: Int): Int {
-        return Random.nextInt(minValue, maxValue)
+    private val _listOfDelays = mutableListOf(0,0,0)
+    private val _listOfDuration = mutableListOf(0,0,0)
+
+    fun generateDuration(index: Int): Int {
+        val minDuration = 7000
+        val maxDuration = 18000
+
+        val duration = Random.nextInt(minDuration, maxDuration)
+        _listOfDuration[index] = duration
+        return duration
+    }
+
+    fun generateDelay(index: Int): Int {
+        val minGap = 0
+        val maxGap = 3000
+
+        val previousEndTime = if (index > 0) _listOfDelays[index - 1] + _listOfDuration[index - 1] else 0
+        val delay = previousEndTime + Random.nextInt(minGap, maxGap)
+
+        _listOfDelays[index] = delay
+        return delay
     }
 
     private val _policeCarsState = MutableStateFlow<List<CarsModel>>(emptyList())
@@ -139,8 +158,10 @@ class GameViewModel(
 
     fun saveHighScore() {
         viewModelScope.launch {
-            if (_score.value > _highScore.value)
+            if (_score.value > _highScore.value){
                 scoreRepository.saveScore(_score.value)
+                _highScore.value = _score.value
+            }
         }
     }
 }

@@ -52,8 +52,11 @@ fun GameScreen(
     LaunchedEffect(collision, isTimeOut) {
         if (collision || isTimeOut) {
             viewModel.saveHighScore()
+
             val route = if (collision) Screens.GameOverScreen.route else Screens.StartScreen.route
-            navController.navigate(route)
+            navController.navigate(route) {
+                popUpTo(navController.graph.startDestinationId)
+            }
         }
     }
 
@@ -70,8 +73,8 @@ fun GameScreen(
         repeat(3) { i ->
             PoliceCar(
                 id = i,
-                durationMillis = viewModel.delayOrDuration(7000, 15000),
-                delay = viewModel.delayOrDuration(0, 10000),
+                durationMillis = viewModel.generateDuration(i),
+                delay = viewModel.generateDelay(i),
                 carState = { car ->
                     car.offsetX = when (i) {
                         0 -> 0f
