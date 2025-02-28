@@ -8,6 +8,7 @@ data class CarsModel(
     var offsetY: Float = 0f,
     var offsetX: Float = 0f,
     var carSize: Size = Size.Zero,
+    var isChecked: Boolean = false
 ) {
     val rectCar: Rect
         get() = Rect(

@@ -21,20 +21,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.crype.cargame.presentation.components.Score
+import com.crype.cargame.presentation.components.Timer
 import com.crype.cargame.presentation.components.main_car.CarControl
 import com.crype.cargame.presentation.components.main_car.MainCar
 import com.crype.cargame.presentation.components.police_car.PoliceCar
 import com.crype.cargame.presentation.components.road.Road
 import com.crype.cargame.presentation.navigation.Screens
 import com.crype.cargame.presentation.viewmodel.GameViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun GameScreen(
     navController: NavController,
-    viewModel: GameViewModel = viewModel()
+    viewModel: GameViewModel = koinViewModel()
 ) {
     val rightInteractionSource = remember { MutableInteractionSource() }
     val rightPressed by rightInteractionSource.collectIsPressedAsState()
@@ -45,8 +47,17 @@ fun GameScreen(
     var roadWidth by remember { mutableStateOf(0f) }
 
     val collision by viewModel.collisionState.collectAsState()
-    LaunchedEffect(collision) {
-        if (collision) navController.navigate(Screens.GameOverScreen.route)
+    val isTimeOut by viewModel.isTimeOut
+
+    LaunchedEffect(collision, isTimeOut) {
+        if (collision || isTimeOut) {
+            viewModel.saveHighScore()
+
+            val route = if (collision) Screens.GameOverScreen.route else Screens.StartScreen.route
+            navController.navigate(route) {
+                popUpTo(navController.graph.startDestinationId)
+            }
+        }
     }
 
     Road()
@@ -62,8 +73,8 @@ fun GameScreen(
         repeat(3) { i ->
             PoliceCar(
                 id = i,
-                durationMillis = viewModel.delayOrDuration(7000, 15000),
-                delay = viewModel.delayOrDuration(0, 10000),
+                durationMillis = viewModel.generateDuration(i),
+                delay = viewModel.generateDelay(i),
                 carState = { car ->
                     car.offsetX = when (i) {
                         0 -> 0f
@@ -97,6 +108,15 @@ fun GameScreen(
             leftInteractionSource = leftInteractionSource,
             rightInteractionSource = rightInteractionSource
         )
+    }
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .padding(horizontal = 50.dp, vertical = 30.dp)
+            .fillMaxWidth()
+    ) {
+        Timer()
+        Score()
     }
 }
 

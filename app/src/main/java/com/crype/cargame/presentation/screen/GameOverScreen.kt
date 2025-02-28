@@ -23,7 +23,6 @@ fun GameOverScreen(
         delay(3000L)
         navController.navigate(route = Screens.StartScreen.route) {
             popUpTo(navController.graph.startDestinationId)
-            launchSingleTop = true
         }
     }
     Box(
